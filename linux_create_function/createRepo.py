@@ -1,3 +1,4 @@
+
 import sys
 import os
 from selenium import webdriver
@@ -56,15 +57,22 @@ def link_github_repo(repo_name=str, projects_path=str, webpage='https://github.c
     os.system('git remote add origin ' + f'{webpage}{username}/{repo_name}.git')
     os.system('git push -u origin master')
     os.system('git status')
+    print('\nProyecto creado correctamente')
+    print('Repositorio remoto en ' + f'{webpage}{username}/{repo_name}.git')
+    print('Repositorio local en ' + f'{projects_path}{repo_name}')
     os.system('code .')
 
 
 def main():
     username = 'sibarras'
     password = 'Paranga1@git'
-
     projects_path = '/home/sam/Desktop/Projects/'
+
+    if len(sys.argv) < 2:
+        print("[ERROR]: Colocar nombre del proyecto.")
+        return None
     repo_name = str(sys.argv[1])
+
     try:
         create_github_repo(username, password, repo_name)
         link_github_repo(repo_name, projects_path)
