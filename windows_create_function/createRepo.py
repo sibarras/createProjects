@@ -47,16 +47,18 @@ def link_github_repo(repo_name=str, projects_path=str, webpage='https://github.c
         webpage (string, optional): github webpage. Defaults to 'https://github.com/'.
         username (string, optional): github username. Defaults to 'sibarras'.
     """
-    os.mkdir(projects_path + repo_name)
-    os.chdir(projects_path + repo_name)
-    os.system('touch README.md')
-    os.system('python -m venv venv')
+    os.mkdir(f'{projects_path}/{repo_name}')
+    os.chdir(f'{projects_path}/{repo_name}')
+    os.system(f'echo {repo_name} >> README.md')
+    virtual = input('Do you want a python virtual env in your project? y/n:').lower()
+    if virtual in ['true', "yes", 'y']:
+        os.system('python -m venv venv')
     os.system('git init')
     os.system('git add .')
     os.system('git remote add origin ' + f'{webpage}/{username}/{repo_name}.git')
     os.system('git push -u origin master')
     os.system('git status')
-    print('\nProyecto Creado Correctamente')
+    print('\n\nProyecto Creado Correctamente')
     print('Repositorio remoto en ' + f'{webpage}/{username}/{repo_name}.git')
     print('Repositorio local en ' + f'{projects_path}/{repo_name}')
     os.system('code .')
