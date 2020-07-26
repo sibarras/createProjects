@@ -1,7 +1,8 @@
 #!/usr/bin/bash
 
 create(){
-    python ~/Desktop/Projects/createProjects/linux_create_function/createRepo.py $1
+    cd ~/Desktop/Projects/createProjects/linux_create_function/
+    python3 createRepo.py $1 $2 $3
     echo
     cd ~/Desktop/Projects/$1
     if [ $2 = '-pyenv' ] || [ $3 = '-pyenv' ]

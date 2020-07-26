@@ -43,6 +43,7 @@ def create_github_repo(token=str, repo_name=str) -> str:
     username = user.login
     user.create_repo(repo_name)
     repo_url = f'https://github.com/{username}/{repo_name}.git'
+
     print('\nRemote repository sucessfully created in ' + repo_url)
     return repo_url
 
@@ -71,25 +72,25 @@ def create_pyenv(repo_path=str) -> None:
     """
     os.system('cd ' + repo_path)
     os.system('python3 -m venv venv')
-    print('\nvitual enviroment created sucessfully!')
+    print('\nvitual enviroment sucessfully created in ' + repo_path)
 
 
 def main():
     # Arguments for functions in secrets
     token = secretData.gitToken
     git_ignore_list = secretData.gitIgnoreList
-    
-    #get path
+
+    # get path
     current_path = os.getcwd().replace('\"', '/')
     current_path = current_path.split('/')
     projects_path = ''
-    for folder in current_path[1:-2]:
+    for folder in current_path[1:-2]:  # 2 levels up
         projects_path += '/' + folder
 
     # System arguments
     args = sys.argv
     if len(args) < 2:
-        print("[ERROR]: Type project's name after create statement. Write --help for more details")
+        print("\n[ERROR]: Type project's name after create statement. Write --help for more details")
         return None
 
     # set repositoty name
@@ -112,21 +113,16 @@ def main():
 
         if '-nolocal' not in args:
             create_local_repo(repo_name, repo_path, git_ignore_list)
-
         if '-noremote' not in args:
             repo_url = create_github_repo(token, repo_name)
-
         if '-nolocal' not in args and '-noremote' not in args:
             link_repos(repo_path, repo_url)
-
         if '-pyenv' in args and '-nolocal' not in args:
             create_pyenv(repo_path)
-
         if '-nolocal' not in args:
             os.system('code .')
-
         if '-nolocal' in args and '-noremote' in args:
-            print('[ERROR]: Create a repo in local or remote.')
+            print('\n[ERROR]: Create a repo in local or remote.')
 
     except Exception as e:
         print(f'[ERROR]: {e}')
