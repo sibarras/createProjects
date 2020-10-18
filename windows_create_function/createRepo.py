@@ -1,8 +1,6 @@
-import sys
-import os
+import sys, os
 from github import Github
-import secretData
-
+from secretData import gitToken, gitIgnoreList
 
 def create_local_repo(repo_name=str, repo_path=str, gitIgnoreList=list) -> None:
     """Create a local repository in a given projects folder
@@ -20,7 +18,7 @@ def create_local_repo(repo_name=str, repo_path=str, gitIgnoreList=list) -> None:
     for file in gitIgnoreList:
         os.system(f'echo {file} >> .gitignore')
     os.system(f'echo {repo_name} >> README.md')
-    os.system(f'touch requirements.txt')
+    os.system(f'echo >> requirements.txt')
 
     # Start local repo
     os.system('git init')
@@ -77,24 +75,31 @@ def create_pyenv(repo_path=str) -> None:
 
 def main():
     # Arguments for functions in secrets
-    token = secretData.gitToken
-    git_ignore_list = secretData.gitIgnoreList
+    token = gitToken
+    git_ignore_list = gitIgnoreList
 
     # get path
-    current_path = os.getcwd().replace('\"', '/')
-    current_path = current_path.split('/')
-    projects_path = ''
+    current_path = os.getcwd().replace('\\', '/').split('/')
+    
+    if os.name == 'nt':
+        projects_path = 'C:'
+    else:
+        projects_path = ''
     for folder in current_path[1:-2]:  # 2 levels up
         projects_path += '/' + folder
 
     # System arguments
     args = sys.argv
+    repo_name = ''
     if len(args) < 2:
-        print("\n[ERROR]: Type project's name after create statement. Write --help for more details")
-        return None
+        repo_name = input("\nWrite the project's name without spaces between words: ")
+        if type(repo_name) is not str or repo_name == '':
+            print('[ERROR]: Write a name to your new project')
+            return None
 
-    # set repositoty name
-    repo_name = args[1]
+    # set repository name if is after command
+    if repo_name == '':
+        repo_name = args[1]
     repo_path = f'{projects_path}/{repo_name}'
 
     # Main functions
@@ -111,17 +116,17 @@ def main():
                        """)
             return None
 
-        if '-nolocal' not in args:
+        if '-no_local' not in args:
             create_local_repo(repo_name, repo_path, git_ignore_list)
-        if '-noremote' not in args:
+        if '-no_remote' not in args:
             repo_url = create_github_repo(token, repo_name)
-        if '-nolocal' not in args and '-noremote' not in args:
+        if '-no_local' not in args and '-no_remote' not in args:
             link_repos(repo_path, repo_url)
-        if '-pyenv' in args and '-nolocal' not in args:
+        if '-venv' in args and '-no_local' not in args:
             create_pyenv(repo_path)
-        if '-nolocal' not in args:
+        if '-no_local' not in args:
             os.system('code .')
-        if '-nolocal' in args and '-noremote' in args:
+        if '-no_local' in args and '-no_remote' in args:
             print('\n[ERROR]: Create a repo in local or remote.')
 
     except Exception as e:
