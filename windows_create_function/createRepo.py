@@ -93,7 +93,7 @@ def main():
     repo_name = ''
     if len(args) < 2:
         repo_name = input("\nWrite the project's name without spaces between words: ")
-        if type(repo_name) is not str or repo_name == '':
+        if type(repo_name) is not str or repo_name == '' or ' ' in repo_name:
             print('[ERROR]: Write a name to your new project')
             return None
 
