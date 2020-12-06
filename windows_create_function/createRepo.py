@@ -18,7 +18,7 @@ def create_local_repo(repo_name=str, repo_path=str, gitIgnoreList=list) -> None:
     for file in gitIgnoreList:
         os.system(f'echo {file} >> .gitignore')
     os.system(f'echo {repo_name} >> README.md')
-    os.system(f'echo >> requirements.txt')
+    os.system(f'echo "" >> requirements.txt')
 
     # Start local repo
     os.system('git init')
@@ -69,7 +69,9 @@ def create_pyenv(repo_path=str) -> None:
         repo_name (str, optional): name of the project or repository. Defaults to str.
     """
     os.system('cd ' + repo_path)
-    os.system('python3 -m venv venv')
+    
+    py = ('python3' if os.name != 'nt' else 'py')
+    os.system(f'{py} -m venv env')
     print('\nvitual enviroment sucessfully created in ' + repo_path)
 
 
@@ -80,14 +82,15 @@ def main():
 
     # get path
     current_path = os.getcwd().replace('\\', '/').split('/')
+    current_path = os.path.abspath(__file__).replace('\\', '/').split('/')
     
     if os.name == 'nt':
         projects_path = 'C:'
     else:
         projects_path = ''
-    for folder in current_path[1:-2]:  # 2 levels up
+    for folder in current_path[1:-3]:  # 2 levels up
         projects_path += '/' + folder
-
+    print(projects_path)
     # System arguments
     args = sys.argv
     repo_name = ''
@@ -109,8 +112,8 @@ def main():
 
               You shoud write: create <project_name> <options>
 
-              Options: -nolocal : Only make a remote repo
-                       -noremote : Only make a local repo
+              Options: -no_local : Only make a remote repo
+                       -no_remote : Only make a local repo
                        -pyenv : Create a python vitual enviroment
 
                        """)
@@ -122,7 +125,7 @@ def main():
             repo_url = create_github_repo(token, repo_name)
         if '-no_local' not in args and '-no_remote' not in args:
             link_repos(repo_path, repo_url)
-        if '-venv' in args and '-no_local' not in args:
+        if '-pyenv' in args and '-no_local' not in args:
             create_pyenv(repo_path)
         if '-no_local' not in args:
             os.system('code .')
@@ -130,7 +133,7 @@ def main():
             print('\n[ERROR]: Create a repo in local or remote.')
 
     except Exception as e:
-        print(f'[ERROR]: {e}')
+        print('[ERROR]:', e)
         return None
 
 

@@ -2,3 +2,4 @@ secret*
 .vscode/
 __pycache__/
 *.log
+env/

@@ -1,4 +1,2 @@
 @echo off
-cd C:/Users/Samuel/Desktop/Projects/createProjects/windows_create_function/
-py createRepo.py
-PAUSE
+c:/Users/Samuel/Desktop/Projects/createProjects/env/Scripts/python c:/Users/Samuel/Desktop/Projects/createProjects/windows_create_function/main.pyw
