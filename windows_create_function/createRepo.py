@@ -18,7 +18,6 @@ def create_local_repo(repo_name=str, repo_path=str, gitIgnoreList=list) -> None:
     for file in gitIgnoreList:
         os.system(f'echo {file} >> .gitignore')
     os.system(f'echo {repo_name} >> README.md')
-    os.system(f'echo "" >> requirements.txt')
 
     # Start local repo
     os.system('git init')
